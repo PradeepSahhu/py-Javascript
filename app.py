@@ -1,5 +1,5 @@
 from os import sendfile
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template,request
 from flask import send_file
 import matplotlib
 matplotlib.use('Agg')  # Use a non-GUI backend
@@ -35,6 +35,33 @@ def plot_png():
     fig.savefig(img, format='png')
     img.seek(0)
     return send_file(img, mimetype='image/png', as_attachment=False)
+
+@app.route('/coordinates', methods=['POST'])
+def coordinates():
+    try:
+        data = request.json
+        if not data or 'x' not in data or 'y' not in data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        x_data = data['x']
+        y_data = data['y']
+        
+        fig, ax = plt.subplots()
+        ax.plot(x_data, y_data)
+
+        ax.set_title('Custom Plot')
+        ax.set_xlabel('X-axis')
+        ax.set_ylabel('Y-axis')
+
+        # Save the plot to a BytesIO object
+        img = io.BytesIO()
+        fig.savefig(img, format='png')
+        img.seek(0)
+        return send_file(img, mimetype='image/png', as_attachment=False)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+
 
 @app.route("/pradeep")
 def greetings():

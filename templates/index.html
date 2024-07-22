@@ -15,12 +15,49 @@
         <th>Result</th>
       </tr>
     </table>
+    <img id="plotImage" src="" alt="Plot will be displayed here" />
+
+    <div id="inputDiv">
+      <div>
+        <label>Enter the first number</label>
+        <input type="number" name="graphData" />
+      </div>
+      <div>
+        <label>Enter the second number</label>
+        <input type="number" name="graphData" />
+      </div>
+
+      <div>
+        <label>Enter the third number</label>
+        <input type="number" name="graphData" />
+      </div>
+
+      <label>Enter the fourth number</label>
+      <input type="number" name="graphData" />
+    </div>
+    <button onclick="addInput()">Add Element</button>
+
+    <button onclick="dataSend()">Click to Submit</button>
     <div id="root">
       <button onClick="showMessage()">Show Greetings</button>
       <img src="/plot.png" alt="Generated Graph" />ls
     </div>
 
     <script>
+      function addInput() {
+        const inputDiv = document.getElementById("inputDiv");
+        const labelSection = document.createElement("label");
+        labelSection.textContent = "Enter the element";
+        const divSection = document.createElement("div");
+        const inputSection = document.createElement("input");
+        inputSection.setAttribute("name", "graphData");
+        inputSection.setAttribute("type", "number");
+        inputSection.style.marginBottom = "5px";
+        divSection.appendChild(labelSection);
+        divSection.appendChild(inputSection);
+
+        inputDiv.appendChild(divSection);
+      }
       function fetchTable() {
         const number = document.getElementById("numberInput").value;
         fetch(`/multiplication_table/${number}`)
@@ -38,6 +75,46 @@
             }
           });
       }
+
+      const dataSend = () => {
+        const allGraphElements = document.getElementsByName("graphData");
+        const allData = [];
+
+        // Collect data from each input element
+        for (let i = 0; i < allGraphElements.length; i++) {
+          const allGraph = allGraphElements[i].value;
+          allData.push(allGraph.split(",").map(Number)); // Split and convert to numbers
+        }
+
+        // Prepare x and y values
+        const x = allData.flat(); // Flatten the array to get all values in a single array
+        const y = x.map((_, index) => index); // Create an array of indexes
+
+        const dataJSON = JSON.stringify({ x, y });
+
+        console.log("sending JSON", dataJSON);
+
+        fetch("/coordinates", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: dataJSON,
+        })
+          .then((response) => response.blob())
+          .then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const plotImage = document.getElementById("plotImage");
+            if (plotImage) {
+              plotImage.src = url;
+            } else {
+              console.error("Error: Element with id 'plotImage' not found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      };
 
       const showMessage = () => {
         const root = document.getElementById("root");
