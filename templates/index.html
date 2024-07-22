@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplication Table</title>
+  </head>
+  <body>
+    <h1>Multiplication Table</h1>
+    <input type="number" id="numberInput" placeholder="Enter a number" />
+    <button onclick="fetchTable()">Generate Table</button>
+    <table id="multiplicationTable" border="1">
+      <tr>
+        <th>Number</th>
+        <th>Result</th>
+      </tr>
+    </table>
+    <div id="root">
+      <button onClick="showMessage()">Show Greetings</button>
+      <img src="/plot.png" alt="Generated Graph" />ls
+    </div>
+
+    <script>
+      function fetchTable() {
+        const number = document.getElementById("numberInput").value;
+        fetch(`/multiplication_table/${number}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const table = document.getElementById("multiplicationTable");
+            // Clear previous rows except the header
+            table.innerHTML = "<tr><th>Number</th><th>Result</th></tr>";
+            for (const [key, value] of Object.entries(data)) {
+              const row = table.insertRow();
+              const cell1 = row.insertCell(0);
+              const cell2 = row.insertCell(1);
+              cell1.innerHTML = key;
+              cell2.innerHTML = value;
+            }
+          });
+      }
+
+      const showMessage = () => {
+        const root = document.getElementById("root");
+        fetch("/pradeep")
+          .then((response) => response.json())
+          .then((data) => {
+            for (const values of Object.values(data)) {
+              const element = document.createElement("li");
+              element.innerText = values;
+              root.appendChild(element);
+            }
+          });
+      };
+    </script>
+  </body>
+</html>
