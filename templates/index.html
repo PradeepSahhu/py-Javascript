@@ -26,16 +26,21 @@
         <label>Enter the second number</label>
         <input type="number" name="graphData" />
       </div>
-
-      <div>
-        <label>Enter the third number</label>
-        <input type="number" name="graphData" />
-      </div>
-
-      <label>Enter the fourth number</label>
-      <input type="number" name="graphData" />
     </div>
     <button onclick="addInput()">Add Element</button>
+
+    <div>
+      <label>Enter the Graph Name</label>
+      <input type="text" name="graphInfo" />
+    </div>
+    <div>
+      <label>Enter the x-axis Name</label>
+      <input type="text" name="graphInfo" />
+    </div>
+    <div>
+      <label>Enter the y-axis Name</label>
+      <input type="text" name="graphInfo" />
+    </div>
 
     <button onclick="dataSend()">Click to Submit</button>
     <div id="root">
@@ -77,8 +82,15 @@
       }
 
       const dataSend = () => {
+        const graphInfo = document.getElementsByName("graphInfo");
         const allGraphElements = document.getElementsByName("graphData");
         const allData = [];
+        const graphInformation = [];
+
+        for (let i = 0; i < graphInfo.length; i++) {
+          const eachInfo = graphInfo[i].value;
+          graphInformation.push(eachInfo);
+        }
 
         // Collect data from each input element
         for (let i = 0; i < allGraphElements.length; i++) {
@@ -90,7 +102,14 @@
         const x = allData.flat(); // Flatten the array to get all values in a single array
         const y = x.map((_, index) => index); // Create an array of indexes
 
-        const dataJSON = JSON.stringify({ x, y });
+        // const x = allData.map((value, index) => ({
+        //   x: index,
+        //   y: parseFloat(value),
+        // }));
+
+        const dataJSON = JSON.stringify({ graphInformation, x, y });
+
+        // const dataJSON = JSON.stringify({ x, y });
 
         console.log("sending JSON", dataJSON);
 

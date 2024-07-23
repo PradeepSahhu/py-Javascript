@@ -1,4 +1,3 @@
-from os import sendfile
 from flask import Flask, jsonify, render_template,request
 from flask import send_file
 import matplotlib
@@ -45,13 +44,25 @@ def coordinates():
         
         x_data = data['x']
         y_data = data['y']
+        graph_info = data['graphInformation']
         
         fig, ax = plt.subplots()
         ax.plot(x_data, y_data)
 
-        ax.set_title('Custom Plot')
-        ax.set_xlabel('X-axis')
-        ax.set_ylabel('Y-axis')
+        # ax.set_title('Custom Plot')
+        # ax.set_xlabel('X-axis')
+        # ax.set_ylabel('Y-axis')
+
+        # x = [coord['x'] for coord in coordinates]
+        # y = [coord['y'] for coord in coordinates]
+
+        # plt.figure()
+        # plt.plot(x, y, marker='o')
+
+        plt.title(graph_info[0] if len(data.graph_info) > 0 else 'Graph')
+        plt.xlabel(graph_info[1] if len(data.graph_info) > 1 else 'X-axis')
+        plt.ylabel(graph_info[2] if len(data.graph_info) > 2 else 'Y-axis')
+
 
         # Save the plot to a BytesIO object
         img = io.BytesIO()
