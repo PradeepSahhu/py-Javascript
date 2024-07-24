@@ -99,59 +99,16 @@
     </div>
 
     <div class="container-fluid text-center">
-      <form method="POST" action="/pradeep">
+      <form method="POST" action="/update/{{task_update.sno}}">
         <div>
           <lable>To do title</lable>
-          <input name="title" />
+          <input name="title" value="{{task_update.title}}" />
         </div>
-        <div>
-          <label>description</label>
-          <input name="description" />
-        </div>
-        <button type="submit">Add</button>
+
+        <button type="submit" class="my-5 btn btn-outline-dark px-5 py-2">
+          Edit
+        </button>
       </form>
-    </div>
-
-    <div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">S.No</th>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Time Created</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for all_task in all_tasks%}
-          <tr>
-            <th scope="row">{{all_task.sno}}</th>
-            <td>{{all_task.title}}</td>
-            <td>{{all_task.desc}}</td>
-            <td>{{all_task.date_created}}</td>
-
-            <td>
-              <a
-                type="button"
-                onclick=""
-                class="btn btn-outline-dark"
-                href="/delete/{{all_task.sno}}"
-                >Remove</a
-              >
-            </td>
-            <td>
-              <a
-                type="button"
-                href="/update/{{all_task.sno}}"
-                class="btn btn-outline-dark"
-                >Update</a
-              >
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     </div>
 
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

@@ -1,5 +1,5 @@
 
-from flask import Flask,render_template
+from flask import Flask,render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -19,15 +19,53 @@ class ToDo(db.Model):
     def __repr__(self)->str:
         return f"{self.sno} - {self.title}"
 
+@app.route("/")
+def home():
+    return "<p>Hello home page</p>"
 
-@app.route("/",methods=["GET","POST"])
-def hello_world():
+@app.route("/pradeep",methods=["GET","POST"])
+def submitingToDB():
     if request.method == "POST":
-        print("POST")
-    todo = ToDo(title="First todo",desc="Start it for now and see it")
-    db.session.add(todo)
-    db.session.commit()
-    return "<p>Hello, World!</p>"
+        title = request.form["title"]
+        description = request.form["description"]
+        print(title,description)
+        todo = ToDo(title=title,desc=description)
+        db.session.add(todo)
+        db.session.commit()
+
+    all_tasks = ToDo.query.order_by(ToDo.date_created).all()
+    print(all_tasks)
+
+    return render_template("index.html", all_tasks=all_tasks)
+
+@app.route("/delete/<int:id>")
+def delete(id):
+    task_delete = ToDo.query.get_or_404(id)
+
+    try:
+        db.session.delete(task_delete)
+        db.session.commit()
+        return redirect("/pradeep")
+    
+    except:
+        return "Their is some problem in deletion"
+
+@app.route("/update/<int:id>",methods=["GET","POST"])
+def updation(id):
+    task_update = ToDo.query.get_or_404(id)
+    try:
+        if(request.method == "POST"):
+            task_update.title = request.form["title"]
+
+            try:
+                db.session.commit()
+                return redirect("/pradeep")
+            except:
+                return "their is some problem in updation in inner"
+        else:
+            return render_template("updation.html", task_update=task_update)
+    except:
+        return "their is some problem in updation in outer"
 
 
 @app.route("/pradeep")
